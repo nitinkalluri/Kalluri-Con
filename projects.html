@@ -18,12 +18,22 @@
 .project-arrow { position:absolute; top:24px; right:24px; width:40px; height:40px; border-radius:50%; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:18px; transition:all 0.3s; }
 .project-card:hover .project-arrow { border-color:var(--gold-primary); color:var(--gold-primary); }
 
-.stats-bar { background:var(--bg-secondary); padding:60px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
-.stats-row { display:flex; justify-content:space-around; text-align:center; flex-wrap:wrap; gap:24px; }
-.stat-item .stat-num { font-family:var(--font-heading); font-weight:700; font-size:42px; color:var(--gold-primary); }
-.stat-item .stat-label { font-weight:200; font-size:12px; letter-spacing:3px; text-transform:uppercase; color:var(--text-muted); margin-top:4px; }
+/* Tabs */
+.tab-bar { display:flex; gap:0; border:1px solid var(--border); border-radius:8px; overflow:hidden; width:fit-content; margin:48px auto 0; }
+.tab-btn { padding:12px 40px; font-size:12px; letter-spacing:3px; text-transform:uppercase; font-weight:400; cursor:pointer; background:transparent; border:none; color:var(--text-muted); transition:all 0.3s; }
+.tab-btn:first-child { border-right:1px solid var(--border); }
+.tab-btn.active { background:var(--gold-primary); color:#000; font-weight:600; }
+.tab-btn:hover:not(.active) { color:var(--gold-primary); }
 
-@media(max-width:768px) { .projects-grid{grid-template-columns:1fr} .project-card.featured{height:380px} }
+/* Status badge */
+.project-status { position:absolute; top:20px; left:20px; font-size:9px; letter-spacing:3px; text-transform:uppercase; padding:5px 12px; border-radius:20px; font-weight:600; }
+.status-ongoing { background:rgba(201,168,76,0.15); color:var(--gold-primary); border:1px solid rgba(201,168,76,0.3); }
+.status-completed { background:rgba(255,255,255,0.06); color:var(--text-muted); border:1px solid var(--border); }
+
+.projects-panel { display:none; }
+.projects-panel.active { display:block; }
+
+@media(max-width:768px) { .projects-grid{grid-template-columns:1fr} .project-card.featured{height:380px} .tab-btn{padding:12px 24px;} }
 </style>
 </head>
 <body>
@@ -31,28 +41,48 @@
 
 <section class="page-hero"><div class="page-hero-grid"></div><div class="container"><span class="label anim-up">Portfolio</span><h1 class="section-heading anim-up-d1">Featured <span class="gold-text">Projects</span></h1><p class="section-desc anim-up-d2">A selection of our finest work across residential and commercial construction.</p><div class="breadcrumb anim-up-d3"><a href="index.html">Home</a> &nbsp;/&nbsp; <span>Projects</span></div></div></section>
 
-<div class="stats-bar">
-  <div class="container"><div class="stats-row">
-    <div class="stat-item"><div class="stat-num">250+</div><div class="stat-label">Projects Completed</div></div>
-    <div class="stat-item"><div class="stat-num">1.2M</div><div class="stat-label">Sq Ft Built</div></div>
-    <div class="stat-item"><div class="stat-num">15+</div><div class="stat-label">Years of Experience</div></div>
-    <div class="stat-item"><div class="stat-num">98%</div><div class="stat-label">On-Time Delivery</div></div>
-  </div></div>
-</div>
-
 <section class="section-pad" style="background:var(--bg-secondary)">
   <div class="container">
-    <div class="projects-grid">
-      <div class="project-card featured"><div class="project-bg"><div class="project-bg-pattern"></div></div><span class="project-arrow">↗</span><div class="project-content"><div class="project-type">Commercial</div><h3 class="project-name">Skyline Business Tower</h3><p class="project-meta">12-story commercial complex — 85,000 sq ft — Completed 2024</p></div></div>
-      <div class="project-card"><div class="project-bg"><div class="project-bg-pattern"></div></div><span class="project-arrow">↗</span><div class="project-content"><div class="project-type">Residential</div><h3 class="project-name">The Meridian Estates</h3><p class="project-meta">Luxury villa community — 24 units — Completed 2024</p></div></div>
-      <div class="project-card"><div class="project-bg"><div class="project-bg-pattern"></div></div><span class="project-arrow">↗</span><div class="project-content"><div class="project-type">Commercial</div><h3 class="project-name">Apex Retail Center</h3><p class="project-meta">Modern retail &amp; dining hub — 42,000 sq ft — Completed 2023</p></div></div>
-      <div class="project-card"><div class="project-bg"><div class="project-bg-pattern"></div></div><span class="project-arrow">↗</span><div class="project-content"><div class="project-type">Residential</div><h3 class="project-name">Oakwood Modern Home</h3><p class="project-meta">Custom luxury residence — 6,200 sq ft — Completed 2023</p></div></div>
-      <div class="project-card"><div class="project-bg"><div class="project-bg-pattern"></div></div><span class="project-arrow">↗</span><div class="project-content"><div class="project-type">Renovation</div><h3 class="project-name">Heritage Office Restoration</h3><p class="project-meta">Historic building modernization — 18,000 sq ft — Completed 2023</p></div></div>
-      <div class="project-card"><div class="project-bg"><div class="project-bg-pattern"></div></div><span class="project-arrow">↗</span><div class="project-content"><div class="project-type">Residential</div><h3 class="project-name">Lakeview Residence</h3><p class="project-meta">Waterfront luxury home — 5,400 sq ft — Completed 2022</p></div></div>
-      <div class="project-card"><div class="project-bg"><div class="project-bg-pattern"></div></div><span class="project-arrow">↗</span><div class="project-content"><div class="project-type">Commercial</div><h3 class="project-name">Metro Office Park</h3><p class="project-meta">3-building office campus — 60,000 sq ft — Completed 2022</p></div></div>
+
+    <!-- Tab Buttons -->
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('ongoing', this)">Ongoing</button>
+      <button class="tab-btn" onclick="switchTab('completed', this)">Completed</button>
     </div>
+
+    <!-- Ongoing Projects -->
+    <div class="projects-panel active" id="panel-ongoing">
+      <div class="projects-grid">
+        <div class="project-card featured"><div class="project-bg"><div class="project-bg-pattern"></div></div><span class="project-status status-ongoing">Ongoing</span><span class="project-arrow">↗</span><div class="project-content"><div class="project-type">Commercial</div><h3 class="project-name">Project Name</h3><p class="project-meta">Description — Size — Expected Completion</p></div></div>
+        <div class="project-card"><div class="project-bg"><div class="project-bg-pattern"></div></div><span class="project-status status-ongoing">Ongoing</span><span class="project-arrow">↗</span><div class="project-content"><div class="project-type">Residential</div><h3 class="project-name">Project Name</h3><p class="project-meta">Description — Size — Expected Completion</p></div></div>
+        <div class="project-card"><div class="project-bg"><div class="project-bg-pattern"></div></div><span class="project-status status-ongoing">Ongoing</span><span class="project-arrow">↗</span><div class="project-content"><div class="project-type">Renovation</div><h3 class="project-name">Project Name</h3><p class="project-meta">Description — Size — Expected Completion</p></div></div>
+      </div>
+    </div>
+
+    <!-- Completed Projects -->
+    <div class="projects-panel" id="panel-completed">
+      <div class="projects-grid">
+        <div class="project-card featured"><div class="project-bg"><div class="project-bg-pattern"></div></div><span class="project-status status-completed">Completed</span><span class="project-arrow">↗</span><div class="project-content"><div class="project-type">Commercial</div><h3 class="project-name">Skyline Business Tower</h3><p class="project-meta">12-story commercial complex — 85,000 sq ft — Completed 2024</p></div></div>
+        <div class="project-card"><div class="project-bg"><div class="project-bg-pattern"></div></div><span class="project-status status-completed">Completed</span><span class="project-arrow">↗</span><div class="project-content"><div class="project-type">Residential</div><h3 class="project-name">The Meridian Estates</h3><p class="project-meta">Luxury villa community — 24 units — Completed 2024</p></div></div>
+        <div class="project-card"><div class="project-bg"><div class="project-bg-pattern"></div></div><span class="project-status status-completed">Completed</span><span class="project-arrow">↗</span><div class="project-content"><div class="project-type">Commercial</div><h3 class="project-name">Apex Retail Center</h3><p class="project-meta">Modern retail &amp; dining hub — 42,000 sq ft — Completed 2023</p></div></div>
+        <div class="project-card"><div class="project-bg"><div class="project-bg-pattern"></div></div><span class="project-status status-completed">Completed</span><span class="project-arrow">↗</span><div class="project-content"><div class="project-type">Residential</div><h3 class="project-name">Oakwood Modern Home</h3><p class="project-meta">Custom luxury residence — 6,200 sq ft — Completed 2023</p></div></div>
+        <div class="project-card"><div class="project-bg"><div class="project-bg-pattern"></div></div><span class="project-status status-completed">Completed</span><span class="project-arrow">↗</span><div class="project-content"><div class="project-type">Renovation</div><h3 class="project-name">Heritage Office Restoration</h3><p class="project-meta">Historic building modernization — 18,000 sq ft — Completed 2023</p></div></div>
+        <div class="project-card"><div class="project-bg"><div class="project-bg-pattern"></div></div><span class="project-status status-completed">Completed</span><span class="project-arrow">↗</span><div class="project-content"><div class="project-type">Residential</div><h3 class="project-name">Lakeview Residence</h3><p class="project-meta">Waterfront luxury home — 5,400 sq ft — Completed 2022</p></div></div>
+        <div class="project-card"><div class="project-bg"><div class="project-bg-pattern"></div></div><span class="project-status status-completed">Completed</span><span class="project-arrow">↗</span><div class="project-content"><div class="project-type">Commercial</div><h3 class="project-name">Metro Office Park</h3><p class="project-meta">3-building office campus — 60,000 sq ft — Completed 2022</p></div></div>
+      </div>
+    </div>
+
   </div>
 </section>
+
+<script>
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.projects-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+</script>
 
 <footer class="footer"><div class="container"><div class="footer-grid"><div><a href="index.html" style="display:inline-flex;gap:12px;align-items:center"><svg width="36" height="36" viewBox="0 0 120 120"><defs><linearGradient id="fg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#c9a84c"/><stop offset="40%" style="stop-color:#f0d78c"/><stop offset="100%" style="stop-color:#b8912a"/></linearGradient></defs><rect x="8" y="8" width="104" height="104" rx="4" fill="none" stroke="url(#fg)" stroke-width="1.5" opacity=".3"/><rect x="32" y="28" width="9" height="64" fill="url(#fg)" rx="1"/><polygon points="41,52 41,43 78,27 78,36" fill="url(#fg)"/><polygon points="41,60 41,69 78,93 78,84" fill="url(#fg)"/></svg><div><div style="font-family:var(--font-heading);font-weight:700;font-size:16px;letter-spacing:4px;color:var(--gold-primary)">KALLURI</div><div style="font-weight:200;font-size:7px;letter-spacing:4px;color:var(--text-muted);text-transform:uppercase">Construction</div></div></a><p class="footer-brand-text">Premium residential and commercial construction.</p></div><div><h4 class="footer-heading">Services</h4><ul class="footer-links"><li><a href="services.html">Residential</a></li><li><a href="services.html">Commercial</a></li><li><a href="services.html">Interior Design</a></li><li><a href="services.html">Renovation</a></li></ul></div><div><h4 class="footer-heading">Company</h4><ul class="footer-links"><li><a href="about.html">About Us</a></li><li><a href="projects.html">Projects</a></li><li><a href="blog.html">Blog</a></li><li><a href="contact.html">Contact</a></li></ul></div><div><h4 class="footer-heading">Contact</h4><ul class="footer-links"><li><a href="mailto:info@kalluriconstruction.com">info@kalluriconstruction.com</a></li><li><a href="tel:+15550000000">+1 (555) 000-0000</a></li></ul></div></div><div class="footer-bottom"><span class="footer-copy">&copy; 2026 Kalluri Construction. All rights reserved.</span><div class="footer-socials"><a href="#" class="footer-social">f</a><a href="#" class="footer-social">in</a><a href="#" class="footer-social">Li</a><a href="#" class="footer-social">X</a></div></div></div></footer>
 <script src="script.js"></script>
